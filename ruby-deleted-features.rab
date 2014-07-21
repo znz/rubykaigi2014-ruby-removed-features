@@ -134,6 +134,21 @@ to_a とは別に to_splat というメソッドが呼ばれるようになっ�
 ruby 1.8 までは if の条件式の後ろなどに ((':')) を付けられるという隠し機能がありましたが、
 1.9 では取り除かれました。
 
+= ((File.exists?))
+
+  * (({File.exist?}))  (recommend)
+  * (({File.exists?})) (deprecated)
+
+== note
+
+Ruby 本体のメソッド名は出来るだけ三単現のsを付けないというルールがあるので、
+File.exists? は以前警告が出ていたのですが、
+何かのミスだったのか警告が一度出なくなって、
+また出るようになったという経緯があります。
+
+そういう経緯もあってメソッド自体はまだ残っていますが、
+そのうち消されると思います。
+
 = Conclusion
 
   * some features only in development branch
