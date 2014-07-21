@@ -20,7 +20,109 @@
   * one of CRuby committers
   * I use ruby since ruby 1.4.
 
-= if cond:
+== note
+
+まずは自己紹介からです。
+C Ruby のコミッターの一人で、
+ruby を使い始めた時はバージョン 1.4 系でした。
+
+そのバージョンより後で削除された機能で気になったものについての話をします。
+
+= safe level
+
+  * (({$SAFE=4})) since 2.1.0
+  * (({untrust})) since 1.9.1
+
+== note
+
+最近削除された大きな機能として、
+safe level 4 があります。
+
+元々 Ruby の sand box 機能として safe level は不完全で、
+safe level 自体の削除の提案がされたことも何度かありました。
+
+そんな中 1.9.1 で untrust が導入されて
+少しセキュリティ対策が強化されたこともあったのですが、
+活用されることなく 2.1.0 では deprecated になってしまいました。
+
+その 2.1.0 では safe level の 4 も廃止されてしまいました。
+
+= (({'.'})) from (({$LOAD_PATH}))
+
+  * security reason
+  * same as PATH does not contain '.'
+
+== note
+
+セキュリティ関係といえば、
+セキュリティ上の理由で '.' が (('$LOAD_PATH')) からひっそり取り除かれました。
+理由としては実行コマンドの検索パスがカレントディレクトリを含んでいないのと同じ理由です。
+
+= (({$KCODE}))
+
+  * from (({$KCODE})) to Encoding (m17n)
+  * Regexp literal options (remains) : /n /e /s /u
+
+      //n.encoding #=> #<Encoding:US-ASCII>
+      //e.encoding #=> #<Encoding:EUC-JP>
+      //s.encoding #=> #<Encoding:Windows-31J>
+      //u.encoding #=> #<Encoding:UTF-8>
+
+== note
+
+多言語化対応の影響で $KCODE の代わりに Encoding を使うようになりました。
+$KCODE 関連だった正規表現リテラルの n e s u オプションはまだ残っています。
+
+= (({$deferr}))
+(('sub:between 1.6.7 and 1.8.0'))
+
+  * (({$deferr}))  → (({$stderr}))
+  * (({$defout}))  → (({$stdout}))
+  * (({$stderr=})) → (({STDERR.reopen}))
+  * (({$stdin=}))  → (({STDIN.reopen}))
+  * (({$stdout=})) → (({STDOUT.reopen}))
+
+== note
+
+昔は $defout や $deferr というグローバル変数があって、
+子プロセスに影響しない出力先変更に使われていましたが、
+今は $stdout と $stderr に統一されて、
+子プロセスに影響するリダイレクトは reopen を使うようになりました。
+
+= (({$=})) (ignore case)
+
+  * (({$= = true}))
+
+== note
+もう一つ、グローバル変数と言えば $= を true にすると
+ハッシュのキーの文字列などで大文字小文字を無視することが
+出来たのですが、そういう機能はなくなりました。
+
+= (({__send}))
+(('sub:between 1.8 and 1.9'))
+
+  * (({__send__})) cannot call private methods
+  * (({__send}))
+  * (({__send!}))
+  * (({public_send})) since 1.9.1
+
+== note
+1.9 の開発版の途中で send が今の public_send 相当の private メソッドは呼べないという変更が入り、
+(({__send})) と (({__send!})) というメソッドが導入されたことがあったのですが、
+影響が大きすぎたため、元に戻されて (({public_send})) というメソッドが導入されました。
+
+= to_splat
+(('sub: 1.9.x'))
+
+  * (({to_splat})) (!= (({to_a})))
+  * MultipleValue
+
+== note
+真の多値を導入しようとしていた時期があり、
+to_a とは別に to_splat というメソッドが呼ばれるようになっていた時期があったのですが、
+リリースされることなく to_splat は消えました。
+
+= (({if cond:}))
 (('sub:until 1.8'))
 
   if true:
@@ -31,3 +133,17 @@
 
 ruby 1.8 までは if の条件式の後ろなどに ((':')) を付けられるという隠し機能がありましたが、
 1.9 では取り除かれました。
+
+= Conclusion
+
+  * some features only in development branch
+  * some features cannot introduce because of compatibility
+
+== note
+
+いくつかの機能は開発版だけで消えてしまっています。
+またいくつかの機能は互換性のために入らなかったり他の機能になったりしています。
+
+入らなかったり削られたのがなぜなのかを考えることで、
+今後の新機能の提案に生かしていただければ、
+ということで話を終わります。
