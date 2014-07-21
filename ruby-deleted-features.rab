@@ -1,0 +1,33 @@
+= Ruby archaeology
+
+: subtitle
+   deleted features
+: author
+   Kazuhiro NISHIYAMA
+# : institution
+#    所属
+: content-source
+   RubyKaigi2014
+: date
+   2014/09/18-20
+: allotted-time
+   30m
+: theme
+   default
+
+= Who am I?
+
+  * one of CRuby committers
+  * I use ruby since ruby 1.4.
+
+= if cond:
+(('sub:until 1.8'))
+
+  if true:
+    p true
+  end
+
+== note
+
+ruby 1.8 までは if の条件式の後ろなどに ((':')) を付けられるという隠し機能がありましたが、
+1.9 では取り除かれました。
