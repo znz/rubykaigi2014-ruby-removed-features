@@ -1,7 +1,7 @@
 = Ruby archaeology
 
 : subtitle
-   deleted features
+   removed features
 : author
    Kazuhiro NISHIYAMA
 # : institution
@@ -28,14 +28,34 @@ ruby を使い始めた時はバージョン 1.4 系でした。
 
 そのバージョンより後で削除された機能で気になったものについての話をします。
 
-= safe level
+= statfs
 
-  * (({$SAFE=4})) since 2.1.0
-  * (({untrust})) since 1.9.1
+  * (({IO#statfs})) and (({File::Statfs}))
+    * https://bugs.ruby-lang.org/issues/9772
+    * (({statfs.f_type})) for tests
+  * Reject at DevelopersMeeting20140517Japan
 
 == note
 
-最近削除された大きな機能として、
+一時期の開発版にのみ存在した statfs の話です。
+statfs.f_type がテストに必要ということで、とりあえず追加されて、
+各種 OS 対応など、みんなでつついていたのですが、5月17日の開発者会議に
+「Matz: 色々込み入ってるので core には入れないで test 配下へ. 欲しいということがあったら gem にしてください.」
+という理由で却下されました。
+
+= safe level
+
+  * (({$SAFE=4})) is obsolete since 2.1.0
+
+    (('sub:ArgumentError'))
+  * (({untrust})) since 1.9.1
+  * (({untrust})) is deprecated since 2.1.0
+
+    (('sub:its behavior is same as taint'))
+
+== note
+
+最近のリリースで削除された大きな機能として、
 safe level 4 があります。
 
 元々 Ruby の sand box 機能として safe level は不完全で、
@@ -43,14 +63,16 @@ safe level 自体の削除の提案がされたことも何度かありました
 
 そんな中 1.9.1 で untrust が導入されて
 少しセキュリティ対策が強化されたこともあったのですが、
-活用されることなく 2.1.0 では deprecated になってしまいました。
+活用されることなく 2.1.0 では deprecated になり、
+taint と同じ動作になってしまいました。
 
-その 2.1.0 では safe level の 4 も廃止されてしまいました。
+その後の 2.1.0 では safe level の 4 も廃止されて、
+4 を設定しようとすると ArgumentError になるようになってしまいました。
 
 = (({'.'})) from (({$LOAD_PATH}))
 
   * security reason
-  * same as PATH does not contain '.'
+  * same as (({PATH})) does not contain (({'.'}))
 
 == note
 
@@ -61,7 +83,18 @@ safe level 自体の削除の提案がされたことも何度かありました
 = (({$KCODE}))
 
   * from (({$KCODE})) to Encoding (m17n)
-  * Regexp literal options (remains) : /n /e /s /u
+  * (({$KCODE}))  #=> warning: variable $KCODE is no longer effective
+  * (({$KCODE=})) #=> warning: variable $KCODE is no longer effective; ignored
+
+== note
+
+ruby 1.9 の多言語化対応の影響で $KCODE の代わりに Encoding を使うようになりました。
+$KCODE は常に nil がかえってくるようになり、
+$KCODE への代入は無視されるようになりました。
+
+= Regexp options
+
+  * Regexp literal options (remains) : (({/n /e /s /u}))
 
       //n.encoding #=> #<Encoding:US-ASCII>
       //e.encoding #=> #<Encoding:EUC-JP>
@@ -70,8 +103,34 @@ safe level 自体の削除の提案がされたことも何度かありました
 
 == note
 
-多言語化対応の影響で $KCODE の代わりに Encoding を使うようになりました。
 $KCODE 関連だった正規表現リテラルの n e s u オプションはまだ残っています。
+
+= Symbol < String
+
+    Symbol < Stringも止める。caseとかでのバグをたくさん生んでしまう
+
+from http://www.rubyist.net/~matz/20061107.html#p03
+
+== note
+
+開発版の一時期に Symbol が String を継承するように変更されていた時期がありましたが、
+問題が多かったため、元通り継承関係のないクラスに戻されました。
+
+= Symbol < String (cont.)
+
+  ruby 1.8.7:
+    // =~ :s #~> TypeError: can't convert Symbol into String
+    methods[0].class #=> String
+  ruby 1.9.3:
+    // =~ :s #=> 0
+    methods[0].class #=> Symbol
+
+== note
+
+その影響で Symbol に String っぽい挙動が残っている時期がありました。
+その後 methods メソッドのように返り値が String から Symbol に変わったなどの影響もあり、
+
+
 
 = (({$deferr}))
 (('sub:between 1.6.7 and 1.8.0'))
@@ -114,13 +173,13 @@ $KCODE 関連だった正規表現リテラルの n e s u オプションはま�
 = to_splat
 (('sub: 1.9.x'))
 
-  * (({to_splat})) (!= (({to_a})))
-  * MultipleValue
+  * (({to_splat})) (!= (({to_ary}))) (!= (({to_a})))
+  * svalue, avalue, mvalue
 
 == note
-真の多値を導入しようとしていた時期があり、
-to_a とは別に to_splat というメソッドが呼ばれるようになっていた時期があったのですが、
-リリースされることなく to_splat は消えました。
+2006年頃に真の多値を導入しようとしていた時期があり、
+to_ary とは別に to_splat というメソッドが呼ばれるようになっていた時期があったのですが、
+リリースされることなく to_splat などは消えました。
 
 = (({if cond:}))
 (('sub:until 1.8'))

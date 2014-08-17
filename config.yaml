@@ -3,18 +3,18 @@ id: rubykaigi2014
 base_name: ruby-deleted-features
 tags:
 - ruby
-presentation_date: 
-version: 1.0.0
+presentation_date:
+version: 0.0.1
 licenses: []
-slideshare_id: 
-speaker_deck_id: 
-ustream_id: 
-vimeo_id: 
-youtube_id: 
+slideshare_id:
+speaker_deck_id:
+ustream_id:
+vimeo_id:
+youtube_id:
 author:
   markup_language: :rd
   name: Kazuhiro NISHIYAMA
   email: zn@mbf.nifty.com
   rubygems_user: znz
-  slideshare_user: 
-  speaker_deck_user: 
+  slideshare_user:
+  speaker_deck_user:
