@@ -1,7 +1,7 @@
-= Ruby archaeology
+= Archaeology of Ruby: removed features
 
 : subtitle
-   removed features
+   Ruby 考古学 機能編
 : author
    Kazuhiro NISHIYAMA
 # : institution
@@ -17,8 +17,8 @@
 
 = Who am I?
 
-  * one of CRuby committers
-  * I use ruby since ruby 1.4.
+  * one of Ruby committers
+  * I use Ruby since 1.4.6
 
 == note
 
@@ -28,20 +28,20 @@ ruby を使い始めた時はバージョン 1.4 系でした。
 
 そのバージョンより後で削除された機能で気になったものについての話をします。
 
-= statfs
+= statfs in 2.2.0-dev
 
   * (({IO#statfs})) and (({File::Statfs}))
     * https://bugs.ruby-lang.org/issues/9772
     * (({statfs.f_type})) for tests
-  * Reject at DevelopersMeeting20140517Japan
+  * Reject at ((<DevelopersMeeting20140517Japan|URL:https://bugs.ruby-lang.org/projects/ruby/wiki/DevelopersMeeting20140517Japan>))
 
 == note
 
-一時期の開発版にのみ存在した statfs の話です。
+まず最初に、ruby 2.2 の開発版にのみ存在した statfs の話です。
 statfs.f_type がテストに必要ということで、とりあえず追加されて、
-各種 OS 対応など、みんなでつついていたのですが、5月17日の開発者会議に
+各種 OS 対応など、みんなで変更していたのですが、5月17日の開発者会議で
 「Matz: 色々込み入ってるので core には入れないで test 配下へ. 欲しいということがあったら gem にしてください.」
-という理由で却下されました。
+という理由で却下され、最低限の機能だけ test 配下に入り、一般に使える機能としては入りませんでした。
 
 = safe level
 
@@ -105,32 +105,32 @@ $KCODE への代入は無視されるようになりました。
 
 $KCODE 関連だった正規表現リテラルの n e s u オプションはまだ残っています。
 
-= Symbol < String
+= Symbol < String in 2006 (1.9.0-dev)
 
-    Symbol < Stringも止める。caseとかでのバグをたくさん生んでしまう
+* Symbol < Stringも止める。caseとかでのバグをたくさん生んでしまう
 
 from http://www.rubyist.net/~matz/20061107.html#p03
 
 == note
 
 開発版の一時期に Symbol が String を継承するように変更されていた時期がありましたが、
-問題が多かったため、元通り継承関係のないクラスに戻されました。
+問題が多かったため、元通り継承関係のないクラス階層に戻されました。
 
 = Symbol < String (cont.)
 
-  ruby 1.8.7:
+* ruby 1.8.7:
     // =~ :s #~> TypeError: can't convert Symbol into String
     methods[0].class #=> String
-  ruby 1.9.3:
+* ruby 1.9.3:
     // =~ :s #=> 0
     methods[0].class #=> Symbol
 
 == note
 
-その影響で Symbol に String っぽい挙動が残っている時期がありました。
+その影響もあり Symbol に String っぽい挙動が残っています。
+
 その後 methods メソッドのように返り値が String から Symbol に変わったなどの影響もあり、
-
-
+継承関係はなくなったものの Symbol を String に似た扱いにするメソッドが 1.8 までに比べると多くなっています。
 
 = (({$deferr}))
 (('sub:between 1.6.7 and 1.8.0'))
@@ -151,11 +151,15 @@ from http://www.rubyist.net/~matz/20061107.html#p03
 = (({$=})) (ignore case)
 
   * (({$= = true}))
+  * ruby 1.8.7: warning: modifying $= is deprecated
+  * ruby 1.9.3: warning: variable $= is no longer effective; ignored
 
 == note
 もう一つ、グローバル変数と言えば $= を true にすると
 ハッシュのキーの文字列などで大文字小文字を無視することが
-出来たのですが、そういう機能はなくなりました。
+出来たのですが、
+1.8 で影響範囲が限定的になり、
+1.9 でそういう機能はなくなりました。
 
 = (({__send}))
 (('sub:between 1.8 and 1.9'))
