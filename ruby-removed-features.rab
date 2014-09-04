@@ -1,4 +1,4 @@
-= Ruby 考古学 \n 機能編
+= Ruby 考古学 \n 消された機能編
 : subtitle
   Archaeology of Ruby: \n Removed Features
 : author
@@ -27,12 +27,25 @@ ruby を使い始めた時はバージョン 1.4 系でした。
 
 そのバージョンより後で削除された機能で気になったものについての話をします。
 
+= Agenda
+
+  * ((*開発版のみに入っていた機能*))\n
+    (('sub:Some features only in development branch'))
+  * リリースに入った後、消された機能 \n
+    (('sub:Some features removed after release'))
+
+== note
+
+最初に開発版のみに入っていた機能についての話をします。
+
 = statfs in 2.2.0-dev
 
   * (({IO#statfs})) and (({File::Statfs}))
     * https://bugs.ruby-lang.org/issues/9772
     * (({statfs.f_type})) for tests
   * Reject at ((<DevelopersMeeting20140517Japan|URL:https://bugs.ruby-lang.org/projects/ruby/wiki/DevelopersMeeting20140517Japan>))
+
+    (('sub:「Matz: 色々込み入ってるので core には入れないで test 配下へ. 欲しいということがあったら gem にしてください.」'))
 
 == note
 
@@ -41,6 +54,78 @@ statfs.f_type がテストに必要ということで、とりあえず追加さ
 各種 OS 対応など、みんなで変更していたのですが、5月17日の開発者会議で
 「Matz: 色々込み入ってるので core には入れないで test 配下へ. 欲しいということがあったら gem にしてください.」
 という理由で却下され、最低限の機能だけ test 配下に入り、一般に使える機能としては入りませんでした。
+
+= Symbol < String in 2006 (1.9.0-dev)
+
+  * Symbol が String を継承していた時期があった
+  * Symbol < Stringも止める。caseとかでのバグをたくさん生んでしまう
+
+    (('sub:from http://www.rubyist.net/~matz/20061107.html#p03'))
+
+== note
+
+開発版の一時期に Symbol が String を継承するように変更されていた時期がありましたが、
+問題が多かったため、元通り継承関係のないクラス階層に戻されました。
+
+= Symbol < String (cont.)
+
+  ruby 1.8.7:
+    // =~ :s
+    #~> TypeError: can't convert Symbol into String
+    methods[0].class #=> String
+
+  ruby 1.9.3:
+    // =~ :s #=> 0
+    methods[0].class #=> Symbol
+
+* 継承は止めても String に似た扱いは入った。
+
+== note
+
+その影響もあり Symbol に String っぽい挙動が残っています。
+
+その後 methods メソッドのように返り値が String から Symbol に変わったなどの影響もあり、
+継承関係はなくなったものの Symbol を String に似た扱いにするメソッドが 1.8 までに比べると多くなっています。
+
+= (({__send}))
+(('sub:between 1.8 and 1.9'))
+
+  * (({__send__})) cannot call private methods
+  * (({__send})), (({__send!}))
+  * (({public_send})) since 1.9.1
+
+private メソッド呼び出し用途が多く影響範囲が広いため元の挙動に
+
+== note
+1.9 の開発版の途中で send が今の public_send 相当の private メソッドは呼べないという変更が入り、
+(({__send})) と (({__send!})) というメソッドが導入されたことがあったのですが、
+影響が大きすぎたため、元に戻されて (({public_send})) というメソッドが導入されました。
+
+= 真の多値 (to_splat)
+(('sub: 1.9.x'))
+
+  * (({to_splat})) (!= (({to_ary}))) (!= (({to_a})))
+  * svalue, avalue, mvalue
+  * e.g. (({a, b = mvalue}))
+
+== note
+2006年頃に真の多値を導入しようとしていた時期があり、
+to_ary とは別に to_splat というメソッドが呼ばれるようになっていた時期があったのですが、
+リリースされることなく to_splat などは消えました。
+
+リリースされずに消えたので、確認できないので間違っているかもしれませんが、
+多重代入のときなどに to_a や to_ary の代わりに to_splat を呼ぶようになっていたのだと思います。
+
+= Agenda
+
+  * 開発版のみに入っていた機能 \n
+    (('sub:Some features only in development branch'))
+  * ((*リリースに入った後、消された機能*)) \n
+    (('sub:Some features removed after release'))
+
+== note
+
+続いて過去のリリースに入っていたのに、消された機能の話です。
 
 = safe level
 
@@ -104,32 +189,18 @@ $KCODE への代入は無視されるようになりました。
 
 $KCODE 関連だった正規表現リテラルの n e s u オプションはまだ残っています。
 
-= Symbol < String in 2006 (1.9.0-dev)
+= (({$=})) (ignore case)
 
-* Symbol < Stringも止める。caseとかでのバグをたくさん生んでしまう
-
-from http://www.rubyist.net/~matz/20061107.html#p03
-
-== note
-
-開発版の一時期に Symbol が String を継承するように変更されていた時期がありましたが、
-問題が多かったため、元通り継承関係のないクラス階層に戻されました。
-
-= Symbol < String (cont.)
-
-* ruby 1.8.7:
-    // =~ :s #~> TypeError: can't convert Symbol into String
-    methods[0].class #=> String
-* ruby 1.9.3:
-    // =~ :s #=> 0
-    methods[0].class #=> Symbol
+  * (({$= = true}))
+  * ruby 1.8.7: warning: modifying $= is deprecated
+  * ruby 1.9.3: warning: variable $= is no longer effective; ignored
 
 == note
-
-その影響もあり Symbol に String っぽい挙動が残っています。
-
-その後 methods メソッドのように返り値が String から Symbol に変わったなどの影響もあり、
-継承関係はなくなったものの Symbol を String に似た扱いにするメソッドが 1.8 までに比べると多くなっています。
+もう一つ、グローバル変数と言えば $= を true にすると
+ハッシュのキーの文字列などで大文字小文字を無視することが
+出来たのですが、
+1.8 で影響範囲が限定的になり、
+1.9 でそういう機能はなくなりました。
 
 = (({$deferr}))
 (('sub:between 1.6.7 and 1.8.0'))
@@ -147,49 +218,14 @@ from http://www.rubyist.net/~matz/20061107.html#p03
 今は $stdout と $stderr に統一されて、
 子プロセスに影響するリダイレクトは reopen を使うようになりました。
 
-= (({$=})) (ignore case)
-
-  * (({$= = true}))
-  * ruby 1.8.7: warning: modifying $= is deprecated
-  * ruby 1.9.3: warning: variable $= is no longer effective; ignored
-
-== note
-もう一つ、グローバル変数と言えば $= を true にすると
-ハッシュのキーの文字列などで大文字小文字を無視することが
-出来たのですが、
-1.8 で影響範囲が限定的になり、
-1.9 でそういう機能はなくなりました。
-
-= (({__send}))
-(('sub:between 1.8 and 1.9'))
-
-  * (({__send__})) cannot call private methods
-  * (({__send}))
-  * (({__send!}))
-  * (({public_send})) since 1.9.1
-
-== note
-1.9 の開発版の途中で send が今の public_send 相当の private メソッドは呼べないという変更が入り、
-(({__send})) と (({__send!})) というメソッドが導入されたことがあったのですが、
-影響が大きすぎたため、元に戻されて (({public_send})) というメソッドが導入されました。
-
-= to_splat
-(('sub: 1.9.x'))
-
-  * (({to_splat})) (!= (({to_ary}))) (!= (({to_a})))
-  * svalue, avalue, mvalue
-
-== note
-2006年頃に真の多値を導入しようとしていた時期があり、
-to_ary とは別に to_splat というメソッドが呼ばれるようになっていた時期があったのですが、
-リリースされることなく to_splat などは消えました。
-
 = (({if cond:}))
 (('sub:until 1.8'))
 
   if true:
     p true
   end
+
+((':')) をつけられる隠し機能の削除
 
 == note
 
@@ -200,6 +236,8 @@ ruby 1.8 までは if の条件式の後ろなどに ((':')) を付けられる�
 
   * (({File.exist?}))  (recommend)
   * (({File.exists?})) (deprecated)
+
+Ruby 本体のメソッド名は出来るだけ三単現のsを付けない
 
 == note
 
@@ -213,8 +251,8 @@ File.exists? は以前警告が出ていたのですが、
 
 = Conclusion
 
-  * some features only in development branch
-  * some features cannot introduce because of compatibility
+  * Some features only in development branch
+  * Some features cannot introduce because of compatibility
 
 == note
 
