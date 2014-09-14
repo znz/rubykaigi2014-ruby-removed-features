@@ -41,7 +41,7 @@ ruby を使い始めた時はバージョン 1.4 系でした。
 = Safe Level
 
   * (({$SAFE=4})) is obsolete since 2.1.0
-  * DoS や SEGV は防げない不完全な sand box
+  * 不完全な Sand Box
   * Safe Level 自体の削除の話も何度かあった
 
 == note
@@ -52,22 +52,28 @@ safe level 4 があります。
 元々 Ruby の sand box 機能として safe level は不完全で、
 safe level 自体の削除の提案がされたことも何度かありました。
 
-= Safe Level
+(参考: https://bugs.ruby-lang.org/issues/8468#note-15 )
 
-  * (({$SAFE=1})) は tDiary などで使われている
-  * (({$SAFE=2})), (({$SAFE=3})) はほぼ使われていない
-  * (({$SAFE=4})) は Sand Box として使われることがあった
+= Safe level
+
+  * ((<Feature #8468 Remove $SAFE|URL:https://bugs.ruby-lang.org/issues/8468>))
+    * Matz agreed at GitHub Tokyo drinkup (on 2013)
+    * tDiary, which is the only application using $SAFE == 4, also agreed
+    * (({$SAFE < 4})) is a fail-safe feature to detect bugs of applications
 
 == note
+そういう経緯もあり、2013 年の GitHub Tokyo drinkup で削除が合意されたようです。
+(参考: https://bugs.ruby-lang.org/issues/8468 )
 
-safe level 1 は tDiary などで使われていて影響が大きいので、
-safe level 4 だけ削除されました。
+その場で safe level 4 を使っていた tDiary の開発者の賛成もあったようです。
+
+その後の redmine 上での議論で 4 未満の safe level は残ることになったようです。
 
 = Safe Level
 
   * (({$SAFE=4})) is obsolete since 2.1.0
 
-    (('sub:ArgumentError'))
+    (('sub:raise ArgumentError'))
   * (({untrust})) since 1.9.1
   * (({untrust})) is deprecated since 2.1.0
 
@@ -75,13 +81,13 @@ safe level 4 だけ削除されました。
 
 == note
 
-1.9.1 で untrust が導入されて
+その結果、 2.1.0 では safe level の 4 は廃止されて、
+4 を設定しようとすると ArgumentError が発生するようになりました。
+
+その前の 1.9.1 で untrust が導入されて
 少しセキュリティ対策が強化されたこともあったのですが、
 活用されることなく 2.1.0 では deprecated になり、
 taint と同じ動作になってしまいました。
-
-その後の 2.1.0 では safe level の 4 も廃止されて、
-4 を設定しようとすると ArgumentError になるようになってしまいました。
 
 = (({'.'})) from (({$LOAD_PATH}))
 
