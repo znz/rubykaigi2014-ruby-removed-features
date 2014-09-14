@@ -38,7 +38,32 @@ ruby を使い始めた時はバージョン 1.4 系でした。
 
 まず過去のリリースに入っていたのに、消された機能の話です。
 
-= safe level
+= Safe Level
+
+  * (({$SAFE=4})) is obsolete since 2.1.0
+  * DoS や SEGV は防げない不完全な sand box
+  * Safe Level 自体の削除の話も何度かあった
+
+== note
+
+最近のリリースで削除された大きな機能として、
+safe level 4 があります。
+
+元々 Ruby の sand box 機能として safe level は不完全で、
+safe level 自体の削除の提案がされたことも何度かありました。
+
+= Safe Level
+
+  * (({$SAFE=1})) は tDiary などで使われている
+  * (({$SAFE=2})), (({$SAFE=3})) はほぼ使われていない
+  * (({$SAFE=4})) は Sand Box として使われることがあった
+
+== note
+
+safe level 1 は tDiary などで使われていて影響が大きいので、
+safe level 4 だけ削除されました。
+
+= Safe Level
 
   * (({$SAFE=4})) is obsolete since 2.1.0
 
@@ -50,13 +75,7 @@ ruby を使い始めた時はバージョン 1.4 系でした。
 
 == note
 
-最近のリリースで削除された大きな機能として、
-safe level 4 があります。
-
-元々 Ruby の sand box 機能として safe level は不完全で、
-safe level 自体の削除の提案がされたことも何度かありました。
-
-そんな中 1.9.1 で untrust が導入されて
+1.9.1 で untrust が導入されて
 少しセキュリティ対策が強化されたこともあったのですが、
 活用されることなく 2.1.0 では deprecated になり、
 taint と同じ動作になってしまいました。
