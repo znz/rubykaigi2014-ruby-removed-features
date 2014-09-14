@@ -198,37 +198,6 @@ File.exists? は以前警告が出ていたのですが、
 
 続いて開発版のみに入っていた機能についての話をします。
 
-= Symbol.find in 2.2.0-dev
-
- * Symbol.find(str) \n -> symbol or nil
-   * Return the related symbol if the symbol already exists.
-   * Return nil if not.
- * Removed because of Symbol GC
-
-== note
-
-ruby 2.1 までは Symbol は GC の対象ではなかったため、
-Symbol が既に存在するかどうか調べるメソッドが追加されました。
-しかし、 2.2.0 で Symbol も GC 対象になったため、
-リリースに入ることなく削除されました。
-
-= statfs in 2.2.0-dev
-
-  * (({IO#statfs})) and (({File::Statfs}))
-    * https://bugs.ruby-lang.org/issues/9772
-    * (({statfs.f_type})) for tests
-  * Reject at ((<DevelopersMeeting20140517Japan|URL:https://bugs.ruby-lang.org/projects/ruby/wiki/DevelopersMeeting20140517Japan>))
-
-    (('sub:「Matz: 色々込み入ってるので core には入れないで test 配下へ. 欲しいということがあったら gem にしてください.」'))
-
-== note
-
-次に ruby 2.2 の開発版にのみ存在した statfs の話です。
-statfs.f_type がテストに必要ということで、とりあえず追加されて、
-各種 OS 対応など、みんなで変更していたのですが、5月17日の開発者会議で
-「Matz: 色々込み入ってるので core には入れないで test 配下へ. 欲しいということがあったら gem にしてください.」
-という理由で却下され、最低限の機能だけ test 配下に入り、一般に使える機能としては入りませんでした。
-
 = Symbol < String in 2006 (1.9.0-dev)
 
   * Symbol が String を継承していた時期があった
@@ -271,6 +240,7 @@ statfs.f_type がテストに必要ということで、とりあえず追加さ
 private メソッド呼び出し用途が多く影響範囲が広いため元の挙動に
 
 == note
+
 1.9 の開発版の途中で send が今の public_send 相当の private メソッドは呼べないという変更が入り、
 (({__send})) と (({__send!})) というメソッドが導入されたことがあったのですが、
 影響が大きすぎたため、元に戻されて (({public_send})) というメソッドが導入されました。
@@ -283,12 +253,44 @@ private メソッド呼び出し用途が多く影響範囲が広いため元の
   * e.g. (({a, b = mvalue}))
 
 == note
+
 2006年頃に真の多値を導入しようとしていた時期があり、
 to_ary とは別に to_splat というメソッドが呼ばれるようになっていた時期があったのですが、
 リリースされることなく to_splat などは消えました。
 
 リリースされずに消えたので、確認できないので間違っているかもしれませんが、
 多重代入のときなどに to_a や to_ary の代わりに to_splat を呼ぶようになっていたのだと思います。
+
+= Symbol.find in 2.2.0-dev
+
+ * Symbol.find(str) \n -> symbol or nil
+   * Return the related symbol if the symbol already exists.
+   * Return nil if not.
+ * Removed because of Symbol GC
+
+== note
+
+ruby 2.1 までは Symbol は GC の対象ではなかったため、
+Symbol が既に存在するかどうか調べるメソッドが追加されました。
+しかし、 2.2.0 で Symbol も GC 対象になったため、
+リリースに入ることなく削除されました。
+
+= statfs in 2.2.0-dev
+
+  * (({IO#statfs})) and (({File::Statfs}))
+    * https://bugs.ruby-lang.org/issues/9772
+    * (({statfs.f_type})) for tests
+  * Reject at ((<DevelopersMeeting20140517Japan|URL:https://bugs.ruby-lang.org/projects/ruby/wiki/DevelopersMeeting20140517Japan>))
+
+    (('sub:「Matz: 色々込み入ってるので core には入れないで test 配下へ. 欲しいということがあったら gem にしてください.」'))
+
+== note
+
+次に ruby 2.2 の開発版にのみ存在した statfs の話です。
+statfs.f_type がテストに必要ということで、とりあえず追加されて、
+各種 OS 対応など、みんなで変更していたのですが、5月17日の開発者会議で
+「Matz: 色々込み入ってるので core には入れないで test 配下へ. 欲しいということがあったら gem にしてください.」
+という理由で却下され、最低限の機能だけ test 配下に入り、一般に使える機能としては入りませんでした。
 
 = Conclusion
 
