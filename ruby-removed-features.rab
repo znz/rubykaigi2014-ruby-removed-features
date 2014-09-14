@@ -138,6 +138,8 @@ $KCODE 関連だった正規表現リテラルの n e s u オプションはま�
 1.8 で影響範囲が限定的になり、
 1.9 でそういう機能はなくなりました。
 
+ドキュメントに残っていることがありますが、使えないので忘れてください。
+
 = (({$deferr}))
 (('sub:between 1.6.7 and 1.8.0'))
 
@@ -168,7 +170,7 @@ $KCODE 関連だった正規表現リテラルの n e s u オプションはま�
 ruby 1.8 までは if の条件式の後ろなどに ((':')) を付けられるという隠し機能がありましたが、
 1.9 では取り除かれました。
 
-= ((File.exists?))
+= (({File.exists?}))
 
   * (({File.exist?}))  (recommend)
   * (({File.exists?})) (deprecated)
@@ -196,6 +198,20 @@ File.exists? は以前警告が出ていたのですが、
 
 続いて開発版のみに入っていた機能についての話をします。
 
+= Symbol.find in 2.2.0-dev
+
+ * Symbol.find(str) \n -> symbol or nil
+   * Return the related symbol if the symbol already exists.
+   * Return nil if not.
+ * Removed because of Symbol GC
+
+== note
+
+ruby 2.1 までは Symbol は GC の対象ではなかったため、
+Symbol が既に存在するかどうか調べるメソッドが追加されました。
+しかし、 2.2.0 で Symbol も GC 対象になったため、
+リリースに入ることなく削除されました。
+
 = statfs in 2.2.0-dev
 
   * (({IO#statfs})) and (({File::Statfs}))
@@ -207,7 +223,7 @@ File.exists? は以前警告が出ていたのですが、
 
 == note
 
-まず最初に、ruby 2.2 の開発版にのみ存在した statfs の話です。
+次に ruby 2.2 の開発版にのみ存在した statfs の話です。
 statfs.f_type がテストに必要ということで、とりあえず追加されて、
 各種 OS 対応など、みんなで変更していたのですが、5月17日の開発者会議で
 「Matz: 色々込み入ってるので core には入れないで test 配下へ. 欲しいということがあったら gem にしてください.」
