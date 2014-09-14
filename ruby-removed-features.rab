@@ -103,8 +103,8 @@ taint と同じ動作になってしまいました。
 = (({$KCODE}))
 
   * from (({$KCODE})) to Encoding (m17n)
-  * (({$KCODE}))  #=> warning: variable $KCODE is no longer effective
-  * (({$KCODE=})) #=> warning: variable $KCODE is no longer effective; ignored
+  * (({$KCODE})) #=> nil # warning: variable $KCODE is no longer effective
+  * (({$KCODE=})) # warning: variable $KCODE is no longer effective; ignored
 
 == note
 
