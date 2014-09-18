@@ -177,6 +177,10 @@ ruby 1.8 までは if の条件式の後ろなどに ((':')) を付けられる�
 
 Ruby 本体のメソッド名は出来るだけ三単現のsを付けない
 
+  File.exists? IO::NULL
+  # warning: File.exists? is a deprecated
+  # name, use File.exist? instead
+
 == note
 
 Ruby 本体のメソッド名は出来るだけ三単現のsを付けないというルールがあるので、
@@ -186,6 +190,8 @@ File.exists? は以前警告が出ていたのですが、
 
 そういう経緯もあってメソッド自体はまだ残っていますが、
 そのうち消されると思います。
+
+= (({File.exists?}))
 
 = Agenda
 
