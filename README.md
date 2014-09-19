@@ -1,4 +1,4 @@
 rubykaigi2014-ruby-removed-features
 ===================================
 
-RubyKaigi2014 の発表資料 (作成中)
+RubyKaigi 2014 での発表資料です。
