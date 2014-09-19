@@ -279,7 +279,7 @@ ruby 1.9 の開発版の途中で send が今の public_send 相当の private �
 アクセス制限を回避して private メソッドを呼び出すために send を使っていることが多く、
 影響が大きすぎたため、元に戻されて (({public_send})) というメソッドが導入されました。
 
-= 真の多値 (to_splat)
+= Real multi-value (to_splat)
 (('sub: 1.9.x'))
 
   * (({to_splat})) (!= (({to_ary}))) (!= (({to_a})))
