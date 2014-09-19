@@ -1,6 +1,6 @@
-= TODO: スライドのタイトル
+= Archaeology of Ruby: Removed Features Ruby (考古学 消された機能編)
 
-TODO: スライドの説明
+RubyKaigi 2014 での発表資料です。
 
 == 作者向け
 
